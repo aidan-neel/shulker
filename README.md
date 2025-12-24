@@ -1,3 +1,9 @@
-# double-chest
+# (WIP) double-chest
 
-to be storage service project
+Overkill project just for learning new technologies
+
+tech:
+
+-   Very unpractical use of gRPC
+-   Rust
+-   React
