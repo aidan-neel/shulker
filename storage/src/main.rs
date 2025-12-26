@@ -1,8 +1,16 @@
 mod grpc;
+mod db;
+mod models;
 
-use tonic::{transport::Server};
+use tonic::transport::Server;
 use upload::upload_service_server::UploadServiceServer;
 use grpc::upload::UploadServiceImpl;
+
+use std::sync::{Arc, Mutex};
+use db::connection::establish_connection; // your db connection function
+use rusqlite::Connection;
+
+use crate::db::schema::init_db;
 
 pub mod upload {
     tonic::include_proto!("upload");
@@ -11,7 +19,10 @@ pub mod upload {
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let addr = "[::1]:50051".parse()?;
-    let upload_service = UploadServiceImpl::default();
+
+    let conn = Arc::new(Mutex::new(establish_connection()?));
+    let _ = init_db(conn.clone());
+    let upload_service = UploadServiceImpl { conn: conn.clone() };
 
     println!("UploadService listening on {}", addr);
 
@@ -20,5 +31,5 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .serve(addr)
         .await?;
 
-    Ok(())
+    Ok(())  
 }
