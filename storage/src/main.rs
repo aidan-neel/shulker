@@ -1,22 +1,24 @@
-use tonic::transport::Channel;
-use user::user_service_client::UserServiceClient;
-use user::{UserRequest, UserResponse};
+mod grpc;
 
-pub mod user {
-    tonic::include_proto!("user");
+use tonic::{transport::Server};
+use upload::upload_service_server::UploadServiceServer;
+use grpc::upload::UploadServiceImpl;
+
+pub mod upload {
+    tonic::include_proto!("upload");
 }
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let mut client = UserServiceClient::connect("http://[::1]:50051").await?;
+    let addr = "[::1]:50051".parse()?;
+    let upload_service = UploadServiceImpl::default();
 
-    let request = tonic::Request::new(UserRequest {
-        id: 4
-    });
+    println!("UploadService listening on {}", addr);
 
-    let response: tonic::Response<UserResponse> = client.get_user(request).await?;
-
-    println!("Response: {:?}", response.into_inner());
+    Server::builder()
+        .add_service(UploadServiceServer::new(upload_service))
+        .serve(addr)
+        .await?;
 
     Ok(())
 }

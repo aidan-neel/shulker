@@ -1,38 +1,26 @@
-use tonic::{transport::Server, Request, Response, Status};
-use user::user_service_server::{UserService, UserServiceServer};
-use user::{UserRequest, UserResponse};
+use tonic::transport::Channel;
+use tokio_stream::iter;
 
-pub mod user {
-    tonic::include_proto!("user");
+pub mod proto {
+    tonic::include_proto!("upload"); 
 }
 
-#[derive(Default)]
-pub struct MyUserService;
-
-#[tonic::async_trait]
-impl UserService for MyUserService {
-    async fn get_user(&self, request: Request<UserRequest>) -> Result<Response<UserResponse>, Status> {
-        let req = request.into_inner();
-        let user = UserResponse {
-            id: req.id,
-            name: "John Doe".to_string(),
-            email: "johndoe@gmail.com".to_string(),
-        };
-        Ok(Response::new(user))
-    }
-}
+use proto::upload_service_client::UploadServiceClient;
+use proto::{UploadRequest, UploadResponse};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let addr = "[::1]:50051".parse()?;
-    let user_service = MyUserService::default();
+    let mut client = UploadServiceClient::connect("http://[::1]:50051").await?;
 
-    println!("UserService listening on {}", addr);
+    let chunk = UploadRequest {
+        data: vec![1, 2, 3, 4, 5],
+        filename: "example.txt".to_string(),
+    };
+    
+    let request_stream = iter(vec![chunk]);
 
-    Server::builder()
-        .add_service(UserServiceServer::new(user_service))
-        .serve(addr)
-        .await?;
+    let response: tonic::Response<UploadResponse> = client.upload_file(request_stream).await?;
+    println!("Response: {:?}", response.into_inner());
 
     Ok(())
 }
