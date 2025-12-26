@@ -1,7 +1,7 @@
-use crate::models::file::File;
+use common::models::file::File;
 use crate::upload::{UploadRequest, UploadResponse};
 use crate::upload::upload_service_server::UploadService;
-use crate::db::queries::insert_file_async;
+use common::db::queries::insert_file_async;
 use rusqlite::Connection;
 use tokio_stream::StreamExt;    
 use tokio::fs::{create_dir_all, OpenOptions};
@@ -26,7 +26,7 @@ impl UploadService for UploadServiceImpl {
         while let Some(result) = stream.next().await {
             match result {
                 Ok(chunk) => {
-                    let folder_path = "./fs/user1/";  
+                    let folder_path = "./files/user1/";  
                     let file_path = format!("{}{}", folder_path, chunk.filename);
                     create_dir_all(folder_path)
                         .await

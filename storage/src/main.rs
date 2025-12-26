@@ -1,16 +1,14 @@
 mod grpc;
-mod db;
-mod models;
 
 use tonic::transport::Server;
 use upload::upload_service_server::UploadServiceServer;
 use grpc::upload::UploadServiceImpl;
 
 use std::sync::{Arc, Mutex};
-use db::connection::establish_connection; // your db connection function
+use common::db::connection::establish_connection;
 use rusqlite::Connection;
 
-use crate::db::schema::init_db;
+use common::db::schema::init_db;
 
 pub mod upload {
     tonic::include_proto!("upload");

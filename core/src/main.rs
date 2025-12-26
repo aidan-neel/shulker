@@ -1,8 +1,12 @@
+mod routes;
+
 use tonic::transport::Channel;
 use tokio_stream::iter;
+use axum::routing::{get, Router};
 
 pub mod proto {
     tonic::include_proto!("upload"); 
+    tonic::include_proto!("auth");
 }
 
 use proto::upload_service_client::UploadServiceClient;
@@ -10,6 +14,15 @@ use proto::{UploadRequest, UploadResponse};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let app = routes::create_router(); 
+
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:3000")
+        .await
+        .unwrap();
+    
+    println!("listening on {}", listener.local_addr().unwrap());
+    axum::serve(listener, app).await.unwrap();     
+
     let mut client = UploadServiceClient::connect("http://[::1]:50051").await?;
 
     let chunk = UploadRequest {
