@@ -22,7 +22,7 @@ impl UploadService for UploadServiceImpl {
         let mut stream = request.into_inner();
         let mut final_data = Vec::new();
         let conn = self.conn.clone();
-
+        
         while let Some(result) = stream.next().await {
             match result {
                 Ok(chunk) => {

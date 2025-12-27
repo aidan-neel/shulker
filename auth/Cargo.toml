@@ -11,6 +11,7 @@ tonic = "0.14.2"
 tonic-prost = "0.14.2"
 common = { path = "../common" }
 jwt = "0.16.0"
+rusqlite = "0.38.0"
 
 [build-dependencies]
 tonic-prost-build = "0.14.2"
