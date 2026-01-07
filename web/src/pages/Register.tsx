@@ -8,6 +8,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { motion } from "framer-motion";
 import { API_URL } from "@/lib/utils";
 import type { AuthResponse } from "@/responses/auth";
+import { toast } from "sonner";
 
 export default function Register() {
     const [registering, setRegistering] = useState(false);
@@ -38,9 +39,12 @@ export default function Register() {
                     display_name: email.split("@")[0],
                     password: password,
                 }),
+                credentials: "include",
             });
 
             const data = (await res.json()) as AuthResponse;
+            toast.success("Successfully registered!");
+            window.location.href = "/";
         } catch (error: unknown) {
             if (error instanceof Error) {
                 setError(error.message);

@@ -40,7 +40,8 @@ pub async fn create_router() -> Result<Router, tonic::transport::Error> {
             Method::PUT,
             Method::DELETE,
         ])
-        .allow_headers([header::CONTENT_TYPE, header::AUTHORIZATION]);
+        .allow_headers([header::CONTENT_TYPE, header::AUTHORIZATION])
+        .allow_credentials(true);
 
     let state = AppState { 
         db_pool: pool, 

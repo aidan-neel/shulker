@@ -1,5 +1,6 @@
 use axum::http::StatusCode;
 use axum::{Json, routing::post, Router};
+use axum_extra::extract::cookie::{Cookie, SameSite, CookieJar};
 use axum_macros::debug_handler;
 use axum::extract::State;
 use common::utils::tonic_to_http_response;
@@ -95,15 +96,16 @@ async fn refresh(
 #[debug_handler]
 async fn register(
     State(state): State<AppState>,
-    Json(register_payload): Json<RegisterPayload>
-) -> Result<Json<AuthResponse>, (StatusCode, String)> {
+    jar: CookieJar, // 1. Add the jar extractor
+    Json(register_payload): Json<RegisterPayload>,
+) -> Result<(CookieJar, Json<AuthResponse>), (StatusCode, String)> { // 2. Update return type
     let pool = state.db_pool.clone();
     let mut token_client = state.token_grpc_client.clone();
     
     let user_opt = get_user(pool.clone(), register_payload.email.clone())
         .await
         .map_err(|e| {
-            eprintln!("Error in register: {:?}", e); // This prints to your terminal
+            eprintln!("Error in register: {:?}", e);
             (StatusCode::INTERNAL_SERVER_ERROR, e.to_string())
         })?;
 
@@ -118,7 +120,7 @@ async fn register(
         id: None,
         display_name: register_payload.display_name,
         email: register_payload.email.clone(),
-        password_hash: password_hash,
+        password_hash,
         created_at: now,
         updated_at: now,
     })
@@ -144,10 +146,29 @@ async fn register(
     let inner = response.into_inner();
     let token = inner.token.ok_or((StatusCode::INTERNAL_SERVER_ERROR, "Internal server error".to_string()))?;
 
-    Ok(Json(AuthResponse {
+    let access_cookie = Cookie::build(("access_token", token.access_token.clone()))
+        .path("/")
+        .http_only(true)
+        .secure(false) // Set to true in production/HTTPS
+        .same_site(SameSite::Lax)
+        .max_age(time::Duration::hours(24))
+        .build();
+
+    let refresh_cookie = Cookie::build(("refresh_token", token.refresh_token.clone()))
+        .path("/")
+        .http_only(true)
+        .secure(false) // Set to true in production/HTTPS
+        .same_site(SameSite::Lax)
+        .max_age(time::Duration::days(14))
+        .build();
+
+    let updated_jar = jar.add(access_cookie);
+    let final_jar = updated_jar.add(refresh_cookie);
+
+    Ok((final_jar, Json(AuthResponse {
         message: "Successfully registered".to_string(),
         token,
-    }))
+    })))
 }
 
 pub fn router() -> Router<AppState> {
