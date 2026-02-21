@@ -119,14 +119,14 @@
 :root {
     --font-sans: "Geist", sans-serif;
     --font-mono: "Geist Mono", monospace;
-    --radius: 0.55rem;
-    --background: oklch(1 0 0);
+    --radius: 0.65rem;
+    --background: oklch(0.1957 0 0);
     --foreground: oklch(0.21 0 0);
     --card: oklch(1 0 0);
     --card-foreground: oklch(0.145 0 0);
     --popover: oklch(1 0 0);
     --popover-foreground: oklch(0.145 0 0);
-    --primary: oklch(0.205 0 0);
+    --primary: oklch(0.4423 0 0);
     --primary-foreground: oklch(0.985 0 0);
     --secondary: oklch(0.97 0 0);
     --secondary-foreground: oklch(0.205 0 0);
@@ -156,14 +156,14 @@
 .dark {
     --font-sans: "Geist", sans-serif;
     --font-mono: "Geist Mono", monospace;
-    --background: oklch(0 0 0);
+    --background: oklch(0.1496 0 0);
     --foreground: oklch(0.985 0 0);
     --card: oklch(0.205 0 0);
     --card-foreground: oklch(0.985 0 0);
     --popover: oklch(0.205 0 0);
     --popover-foreground: oklch(0.985 0 0);
-    --primary: oklch(0.922 0 0);
-    --primary-foreground: oklch(0.205 0 0);
+    --primary: oklch(0.2891 0 0);
+    --primary-foreground: oklch(0.9821 0 0);
     --secondary: oklch(0.269 0 0);
     --secondary-foreground: oklch(0.985 0 0);
     --muted: oklch(0.269 0 0);
@@ -190,7 +190,7 @@
 }
 
 .h-9 {
-    height: 2.5rem !important;
+    height: 2.45rem !important;
 }
 
 @layer base {
