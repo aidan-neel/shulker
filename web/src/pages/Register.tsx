@@ -67,7 +67,7 @@ export default function Register() {
                 onSubmit={handleSubmit}
                 className={`flex flex-col relative p-4 py-12 pb-16 border rounded-lg transition-all duration-200 items-center gap-4 w-[450px] px-4 ${
                     error
-                        ? "head-shake bg-red-50 border border-red-100"
+                        ? "head-shake bg-red-950 border border-red-900"
                         : "border-transparent"
                 }`}
             >
@@ -78,7 +78,7 @@ export default function Register() {
                 )}
                 <Logo hasText={false} />
                 <header className="flex flex-col items-center mb-6">
-                    <h1 className="font-medium text-xl">
+                    <h1 className="font-semibold text-xl">
                         Register for an account
                     </h1>
                     <p className="text-muted-foreground mt-1">

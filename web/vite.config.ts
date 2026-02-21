@@ -16,6 +16,16 @@ export default defineConfig({
         proxy: {
             "/api": "http://127.0.0.1:3000",
         },
+        watch: {
+            usePolling: true,
+        },
+        host: '0.0.0.0',
+        port: 5173,
+        hmr: {
+            host: 'localhost',
+            protocol: 'ws',
+            clientPort: 5173,
+        }
     },
     resolve: {
         alias: {
