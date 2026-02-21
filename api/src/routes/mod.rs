@@ -1,5 +1,6 @@
 pub mod auth;
 pub mod storage;
+pub mod user;
 
 use std::env;
 use std::sync::Arc;
