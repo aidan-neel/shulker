@@ -84,7 +84,7 @@ impl TokenService for TokenServiceImpl {
         let access = env::var("JWT_ACCESS_SECRET").expect("JWT_ACCESS_SECRET missing");
         let refresh = env::var("JWT_REFRESH_SECRET").expect("JWT_REFRESH_SECRET missing");
         let jwt_service = JWTTokenService::new(access, refresh);
-
+        
         let refresh = common::db::queries::get_refresh_by_token(self.pool.clone(), token_str)
             .await
             .map_err(|_| Status::unauthenticated("Invalid refresh token"))?
