@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package blob;
+
+import "google/api/annotations.proto";
+
+option go_package = "github.com/aidan-neel/shulker/apps/proto/gen/go/blob;blob";
+
+message PutBlobRequest {
+    string filename = 1;
+    string content_type = 2;
+    int64 size = 3;
+    bytes data = 4;
+}

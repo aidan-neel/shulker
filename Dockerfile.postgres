@@ -1,0 +1,10 @@
+FROM postgres:17
+
+RUN apt-get update && apt-get install -y build-essential postgresql-server-dev-17 wget \
+    && wget -q https://github.com/fboulnois/pg_uuidv7/releases/download/v1.6.0/pg_uuidv7.tar.gz \
+    && tar -xzf pg_uuidv7.tar.gz \
+    && cp 17/pg_uuidv7.so $(pg_config --pkglibdir)/ \
+    && cp pg_uuidv7.control pg_uuidv7--*.sql $(pg_config --sharedir)/extension/ \
+    && apt-get remove -y build-essential postgresql-server-dev-17 wget \
+    && apt-get autoremove -y && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* pg_uuidv7*
