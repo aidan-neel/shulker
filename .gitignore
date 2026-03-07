@@ -49,5 +49,4 @@ storage/
 tmp/
 cache/
 apps/server/blobs
-apps/server/5MB.json
-apps/server/test.json
+gitignore/
