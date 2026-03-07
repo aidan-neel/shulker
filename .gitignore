@@ -1,3 +1,50 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Build output
+/bin/
+/build/
+/dist/
+
+# Go workspace
+go.work
+go.work.sum
+
+# Go modules
+vendor/
+
+# Test coverage
+*.cover
+coverage.out
+
+# Logs
+*.log
+
+# Environment files
 .env
-apps/server/blobs
-apps/server/5MB.json
+.env.*
+
+# IDE
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.swp
+
+# Local data
+/blobs/
+data/
+storage/
+tmp/
+cache/
