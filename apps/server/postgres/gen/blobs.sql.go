@@ -11,45 +11,9 @@ import (
 	"github.com/google/uuid"
 )
 
-const createBlob = `-- name: CreateBlob :one
-INSERT INTO blobs (user_id, hash, filepath, mime_type, size)
-VALUES ($1, $2, $3, $4, $5)
-RETURNING id, user_id, hash, filepath, mime_type, size, created_at, ref_count
-`
-
-type CreateBlobParams struct {
-	UserID   uuid.UUID
-	Hash     string
-	Filepath string
-	MimeType string
-	Size     int64
-}
-
-func (q *Queries) CreateBlob(ctx context.Context, arg CreateBlobParams) (Blob, error) {
-	row := q.db.QueryRowContext(ctx, createBlob,
-		arg.UserID,
-		arg.Hash,
-		arg.Filepath,
-		arg.MimeType,
-		arg.Size,
-	)
-	var i Blob
-	err := row.Scan(
-		&i.ID,
-		&i.UserID,
-		&i.Hash,
-		&i.Filepath,
-		&i.MimeType,
-		&i.Size,
-		&i.CreatedAt,
-		&i.RefCount,
-	)
-	return i, err
-}
-
 const decrementBlob = `-- name: DecrementBlob :one
 UPDATE blobs SET ref_count = ref_count - 1 WHERE hash = $1
-RETURNING id, user_id, hash, filepath, mime_type, size, created_at, ref_count
+RETURNING id, hash, mime_type, size, created_at, ref_count
 `
 
 func (q *Queries) DecrementBlob(ctx context.Context, hash string) (Blob, error) {
@@ -57,9 +21,7 @@ func (q *Queries) DecrementBlob(ctx context.Context, hash string) (Blob, error) 
 	var i Blob
 	err := row.Scan(
 		&i.ID,
-		&i.UserID,
 		&i.Hash,
-		&i.Filepath,
 		&i.MimeType,
 		&i.Size,
 		&i.CreatedAt,
@@ -78,7 +40,7 @@ func (q *Queries) DeleteBlob(ctx context.Context, id uuid.UUID) error {
 }
 
 const getBlob = `-- name: GetBlob :one
-SELECT id, user_id, hash, filepath, mime_type, size, created_at, ref_count FROM blobs WHERE id = $1
+SELECT id, hash, mime_type, size, created_at, ref_count FROM blobs WHERE id = $1
 `
 
 func (q *Queries) GetBlob(ctx context.Context, id uuid.UUID) (Blob, error) {
@@ -86,9 +48,7 @@ func (q *Queries) GetBlob(ctx context.Context, id uuid.UUID) (Blob, error) {
 	var i Blob
 	err := row.Scan(
 		&i.ID,
-		&i.UserID,
 		&i.Hash,
-		&i.Filepath,
 		&i.MimeType,
 		&i.Size,
 		&i.CreatedAt,
@@ -98,7 +58,7 @@ func (q *Queries) GetBlob(ctx context.Context, id uuid.UUID) (Blob, error) {
 }
 
 const getBlobByHash = `-- name: GetBlobByHash :one
-SELECT id, user_id, hash, filepath, mime_type, size, created_at, ref_count FROM blobs WHERE hash = $1
+SELECT id, hash, mime_type, size, created_at, ref_count FROM blobs WHERE hash = $1
 `
 
 func (q *Queries) GetBlobByHash(ctx context.Context, hash string) (Blob, error) {
@@ -106,9 +66,7 @@ func (q *Queries) GetBlobByHash(ctx context.Context, hash string) (Blob, error) 
 	var i Blob
 	err := row.Scan(
 		&i.ID,
-		&i.UserID,
 		&i.Hash,
-		&i.Filepath,
 		&i.MimeType,
 		&i.Size,
 		&i.CreatedAt,
@@ -117,71 +75,25 @@ func (q *Queries) GetBlobByHash(ctx context.Context, hash string) (Blob, error) 
 	return i, err
 }
 
-const getBlobsByUser = `-- name: GetBlobsByUser :many
-SELECT id, user_id, hash, filepath, mime_type, size, created_at, ref_count FROM blobs WHERE user_id = $1 ORDER BY created_at DESC
-`
-
-func (q *Queries) GetBlobsByUser(ctx context.Context, userID uuid.UUID) ([]Blob, error) {
-	rows, err := q.db.QueryContext(ctx, getBlobsByUser, userID)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []Blob
-	for rows.Next() {
-		var i Blob
-		if err := rows.Scan(
-			&i.ID,
-			&i.UserID,
-			&i.Hash,
-			&i.Filepath,
-			&i.MimeType,
-			&i.Size,
-			&i.CreatedAt,
-			&i.RefCount,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
 const upsertBlob = `-- name: UpsertBlob :one
-INSERT INTO blobs (user_id, hash, filepath, mime_type, size, ref_count)
-VALUES ($1, $2, $3, $4, $5, 1)
+INSERT INTO blobs (hash, mime_type, size)
+VALUES ($1, $2, $3)
 ON CONFLICT (hash) DO UPDATE SET ref_count = blobs.ref_count + 1
-RETURNING id, user_id, hash, filepath, mime_type, size, created_at, ref_count
+RETURNING id, hash, mime_type, size, created_at, ref_count
 `
 
 type UpsertBlobParams struct {
-	UserID   uuid.UUID
 	Hash     string
-	Filepath string
 	MimeType string
 	Size     int64
 }
 
 func (q *Queries) UpsertBlob(ctx context.Context, arg UpsertBlobParams) (Blob, error) {
-	row := q.db.QueryRowContext(ctx, upsertBlob,
-		arg.UserID,
-		arg.Hash,
-		arg.Filepath,
-		arg.MimeType,
-		arg.Size,
-	)
+	row := q.db.QueryRowContext(ctx, upsertBlob, arg.Hash, arg.MimeType, arg.Size)
 	var i Blob
 	err := row.Scan(
 		&i.ID,
-		&i.UserID,
 		&i.Hash,
-		&i.Filepath,
 		&i.MimeType,
 		&i.Size,
 		&i.CreatedAt,

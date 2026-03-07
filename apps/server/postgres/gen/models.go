@@ -12,9 +12,7 @@ import (
 
 type Blob struct {
 	ID        uuid.UUID
-	UserID    uuid.UUID
 	Hash      string
-	Filepath  string
 	MimeType  string
 	Size      int64
 	CreatedAt time.Time
@@ -26,4 +24,12 @@ type User struct {
 	Email        string
 	CreatedAt    time.Time
 	PasswordHash string
+}
+
+type UserBlob struct {
+	ID        uuid.UUID
+	UserID    uuid.UUID
+	BlobID    uuid.UUID
+	Path      string
+	CreatedAt time.Time
 }

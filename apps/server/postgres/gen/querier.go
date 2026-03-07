@@ -11,15 +11,17 @@ import (
 )
 
 type Querier interface {
-	CreateBlob(ctx context.Context, arg CreateBlobParams) (Blob, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
+	CreateUserBlob(ctx context.Context, arg CreateUserBlobParams) (UserBlob, error)
 	DecrementBlob(ctx context.Context, hash string) (Blob, error)
 	DeleteBlob(ctx context.Context, id uuid.UUID) error
+	DeleteUserBlob(ctx context.Context, arg DeleteUserBlobParams) error
 	GetAllUsers(ctx context.Context) ([]User, error)
 	GetBlob(ctx context.Context, id uuid.UUID) (Blob, error)
 	GetBlobByHash(ctx context.Context, hash string) (Blob, error)
-	GetBlobsByUser(ctx context.Context, userID uuid.UUID) ([]Blob, error)
 	GetUser(ctx context.Context, id uuid.UUID) (User, error)
+	GetUserBlobByPath(ctx context.Context, arg GetUserBlobByPathParams) (Blob, error)
+	GetUserBlobs(ctx context.Context, userID uuid.UUID) ([]Blob, error)
 	GetUserByEmail(ctx context.Context, email string) (User, error)
 	UpsertBlob(ctx context.Context, arg UpsertBlobParams) (Blob, error)
 }

@@ -2,6 +2,7 @@ package blob
 
 import (
 	"context"
+	"fmt"
 
 	blobpb "github.com/aidan-neel/shulker/apps/proto/gen/go/blob"
 	"github.com/aidan-neel/shulker/apps/server/pkg/encryption"
@@ -9,25 +10,36 @@ import (
 )
 
 type Service struct {
-	repo       Repository
-	filesystem filesystem.Filesystem
-	encryption encryption.Encryption
+	repo         Repository
+	userBlobRepo UserBlobRepository
+	filesystem   filesystem.Filesystem
+	encryption   encryption.Encryption
 }
 
-func NewService(repo Repository) *Service {
+func NewService(repo Repository, userBlobRepo UserBlobRepository) *Service {
 	fs := filesystem.NewLocalFileSystem("./blobs")
 	enc := encryption.NewAESEncryption()
 
 	return &Service{
-		filesystem: fs,
-		encryption: enc,
-		repo:       repo,
+		filesystem:   fs,
+		encryption:   enc,
+		repo:         repo,
+		userBlobRepo: userBlobRepo,
+	}
+}
+
+func (s *Service) uniquePath(ctx context.Context, userID, path string) string {
+	candidate := path
+	for i := 1; ; i++ {
+		_, err := s.userBlobRepo.GetUserBlobByPath(ctx, userID, candidate)
+		if err != nil {
+			return candidate
+		}
+		candidate = fmt.Sprintf("%s (%d)", path, i)
 	}
 }
 
 func (s *Service) Put(ctx context.Context, data []byte, userID string, path string, mimeType string) (*blobpb.Blob, error) {
-	user_id := "019cc122-be83-74bd-a725-6aae5019bbd1"
-
 	encrypted, err := s.encryption.Encrypt(ctx, data, mimeType)
 	if err != nil {
 		return nil, err
@@ -38,12 +50,19 @@ func (s *Service) Put(ctx context.Context, data []byte, userID string, path stri
 		return nil, err
 	}
 
-	blob, err := s.repo.UpsertBlob(ctx, user_id, hash, path, mimeType, int64(len(data)))
+	blob, err := s.repo.UpsertBlob(ctx, hash, mimeType, int64(len(data)))
 	if err != nil {
 		return nil, err
 	}
 
-	return blob, err
+	path = s.uniquePath(ctx, userID, path)
+
+	_, err = s.userBlobRepo.CreateUserBlob(ctx, userID, blob.Id, path)
+	if err != nil {
+		return nil, err
+	}
+
+	return blob, nil
 }
 
 func (s *Service) Get(ctx context.Context, hash string) ([]byte, error) {
@@ -57,10 +76,5 @@ func (s *Service) Get(ctx context.Context, hash string) ([]byte, error) {
 		return nil, err
 	}
 
-	decrypted, err := s.encryption.Decrypt(ctx, data, blob.MimeType)
-	if err != nil {
-		return nil, err
-	}
-
-	return decrypted, nil
+	return s.encryption.Decrypt(ctx, data, blob.MimeType)
 }
