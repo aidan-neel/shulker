@@ -49,4 +49,4 @@ storage/
 tmp/
 cache/
 apps/server/blobs
-gitignore/
+apps/server/testdata

@@ -25,7 +25,7 @@ func main() {
 	blobRepo := blob.NewBlobRepo(queries)
 	blobService := blob.NewService(blobRepo)
 
-	data, err := os.ReadFile("./.gitignore/5MB.json")
+	data, err := os.ReadFile("./testdata/5MB.json")
 	if err != nil {
 		panic(err)
 	}
@@ -40,5 +40,5 @@ func main() {
 		log.Fatal(err)
 	}
 
-	os.WriteFile("./.gitignore/test.json", data, 0644)
+	os.WriteFile("./testdata/test.json", data, 0644)
 }
