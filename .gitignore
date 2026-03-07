@@ -1,3 +1,3 @@
 .env
-apps/server/data
+apps/server/blobs
 apps/server/5MB.json
