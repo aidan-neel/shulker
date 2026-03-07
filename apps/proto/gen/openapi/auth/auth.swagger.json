@@ -23,7 +23,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/authLoginResponse"
+              "$ref": "#/definitions/authLoginResult"
             }
           },
           "default": {
@@ -55,7 +55,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/authRegisterResponse"
+              "$ref": "#/definitions/authRegisterResult"
             }
           },
           "default": {
@@ -94,10 +94,16 @@
       }
     },
     "authLoginResponse": {
+      "type": "object"
+    },
+    "authLoginResult": {
       "type": "object",
       "properties": {
-        "token": {
-          "$ref": "#/definitions/authToken"
+        "success": {
+          "$ref": "#/definitions/authLoginResponse"
+        },
+        "error": {
+          "$ref": "#/definitions/commonErrorResponse"
         }
       }
     },
@@ -113,20 +119,26 @@
       }
     },
     "authRegisterResponse": {
+      "type": "object"
+    },
+    "authRegisterResult": {
       "type": "object",
       "properties": {
-        "token": {
-          "$ref": "#/definitions/authToken"
+        "success": {
+          "$ref": "#/definitions/authRegisterResponse"
+        },
+        "error": {
+          "$ref": "#/definitions/commonErrorResponse"
         }
       }
     },
-    "authToken": {
+    "commonErrorResponse": {
       "type": "object",
       "properties": {
-        "accessToken": {
+        "code": {
           "type": "string"
         },
-        "refreshToken": {
+        "message": {
           "type": "string"
         }
       }

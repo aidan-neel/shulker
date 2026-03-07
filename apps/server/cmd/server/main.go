@@ -58,7 +58,7 @@ func main() {
 	mux.Handle(blobPath, middleware.AuthMiddleware(blobHandler))
 
 	authPath, authHandler := authconnect.NewAuthServiceHandler(auth.New(authService))
-	mux.Handle(authPath, authHandler)
+	mux.Handle(authPath, middleware.InjectResponseWriter(authHandler))
 
 	mux.Handle("/docs/swagger/", http.StripPrefix("/docs/swagger/", http.FileServer(http.Dir("../proto/gen/openapi"))))
 	mux.HandleFunc("/docs/", func(w http.ResponseWriter, r *http.Request) {
@@ -106,6 +106,7 @@ window.onload = function() {
 		AllowedOrigins: []string{"http://localhost:5173"},
 		AllowedMethods: []string{
 			http.MethodPost,
+			http.MethodOptions,
 		},
 		AllowedHeaders: []string{
 			"Content-Type",
@@ -114,6 +115,7 @@ window.onload = function() {
 			"Grpc-Timeout",
 			"Authorization",
 		},
+		AllowCredentials: true,
 		ExposedHeaders: []string{
 			"Grpc-Status",
 			"Grpc-Message",

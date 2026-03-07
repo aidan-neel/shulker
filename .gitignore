@@ -50,3 +50,4 @@ tmp/
 cache/
 apps/server/blobs
 apps/server/testdata
+node_modules/

@@ -41,8 +41,8 @@ const (
 
 // AuthServiceClient is a client for the auth.AuthService service.
 type AuthServiceClient interface {
-	Login(context.Context, *connect.Request[auth.LoginRequest]) (*connect.Response[auth.LoginResponse], error)
-	Register(context.Context, *connect.Request[auth.RegisterRequest]) (*connect.Response[auth.RegisterResponse], error)
+	Login(context.Context, *connect.Request[auth.LoginRequest]) (*connect.Response[auth.LoginResult], error)
+	Register(context.Context, *connect.Request[auth.RegisterRequest]) (*connect.Response[auth.RegisterResult], error)
 }
 
 // NewAuthServiceClient constructs a client for the auth.AuthService service. By default, it uses
@@ -56,13 +56,13 @@ func NewAuthServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 	baseURL = strings.TrimRight(baseURL, "/")
 	authServiceMethods := auth.File_auth_auth_proto.Services().ByName("AuthService").Methods()
 	return &authServiceClient{
-		login: connect.NewClient[auth.LoginRequest, auth.LoginResponse](
+		login: connect.NewClient[auth.LoginRequest, auth.LoginResult](
 			httpClient,
 			baseURL+AuthServiceLoginProcedure,
 			connect.WithSchema(authServiceMethods.ByName("Login")),
 			connect.WithClientOptions(opts...),
 		),
-		register: connect.NewClient[auth.RegisterRequest, auth.RegisterResponse](
+		register: connect.NewClient[auth.RegisterRequest, auth.RegisterResult](
 			httpClient,
 			baseURL+AuthServiceRegisterProcedure,
 			connect.WithSchema(authServiceMethods.ByName("Register")),
@@ -73,24 +73,24 @@ func NewAuthServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 
 // authServiceClient implements AuthServiceClient.
 type authServiceClient struct {
-	login    *connect.Client[auth.LoginRequest, auth.LoginResponse]
-	register *connect.Client[auth.RegisterRequest, auth.RegisterResponse]
+	login    *connect.Client[auth.LoginRequest, auth.LoginResult]
+	register *connect.Client[auth.RegisterRequest, auth.RegisterResult]
 }
 
 // Login calls auth.AuthService.Login.
-func (c *authServiceClient) Login(ctx context.Context, req *connect.Request[auth.LoginRequest]) (*connect.Response[auth.LoginResponse], error) {
+func (c *authServiceClient) Login(ctx context.Context, req *connect.Request[auth.LoginRequest]) (*connect.Response[auth.LoginResult], error) {
 	return c.login.CallUnary(ctx, req)
 }
 
 // Register calls auth.AuthService.Register.
-func (c *authServiceClient) Register(ctx context.Context, req *connect.Request[auth.RegisterRequest]) (*connect.Response[auth.RegisterResponse], error) {
+func (c *authServiceClient) Register(ctx context.Context, req *connect.Request[auth.RegisterRequest]) (*connect.Response[auth.RegisterResult], error) {
 	return c.register.CallUnary(ctx, req)
 }
 
 // AuthServiceHandler is an implementation of the auth.AuthService service.
 type AuthServiceHandler interface {
-	Login(context.Context, *connect.Request[auth.LoginRequest]) (*connect.Response[auth.LoginResponse], error)
-	Register(context.Context, *connect.Request[auth.RegisterRequest]) (*connect.Response[auth.RegisterResponse], error)
+	Login(context.Context, *connect.Request[auth.LoginRequest]) (*connect.Response[auth.LoginResult], error)
+	Register(context.Context, *connect.Request[auth.RegisterRequest]) (*connect.Response[auth.RegisterResult], error)
 }
 
 // NewAuthServiceHandler builds an HTTP handler from the service implementation. It returns the path
@@ -127,10 +127,10 @@ func NewAuthServiceHandler(svc AuthServiceHandler, opts ...connect.HandlerOption
 // UnimplementedAuthServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedAuthServiceHandler struct{}
 
-func (UnimplementedAuthServiceHandler) Login(context.Context, *connect.Request[auth.LoginRequest]) (*connect.Response[auth.LoginResponse], error) {
+func (UnimplementedAuthServiceHandler) Login(context.Context, *connect.Request[auth.LoginRequest]) (*connect.Response[auth.LoginResult], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("auth.AuthService.Login is not implemented"))
 }
 
-func (UnimplementedAuthServiceHandler) Register(context.Context, *connect.Request[auth.RegisterRequest]) (*connect.Response[auth.RegisterResponse], error) {
+func (UnimplementedAuthServiceHandler) Register(context.Context, *connect.Request[auth.RegisterRequest]) (*connect.Response[auth.RegisterResult], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("auth.AuthService.Register is not implemented"))
 }

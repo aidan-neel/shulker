@@ -3,23 +3,38 @@ syntax = "proto3";
 package auth;
 
 import "google/api/annotations.proto";
+import "common/error.proto";
 
 option go_package = "github.com/aidan-neel/shulker/apps/proto/gen/go/auth;auth";
 
 service AuthService {
-    rpc Login(LoginRequest) returns (LoginResponse) {
+    rpc Login(LoginRequest) returns (LoginResult) {
         option (google.api.http) = {
             post: "/auth.AuthService/Login"
             body: "*"
         };
     }
 
-    rpc Register(RegisterRequest) returns (RegisterResponse) {
+    rpc Register(RegisterRequest) returns (RegisterResult) {
         option (google.api.http) = {
             post: "/auth.AuthService/Register"
             body: "*"
         };
     }
+}
+
+message RegisterResult {
+  oneof result {
+    RegisterResponse success = 1;
+    common.ErrorResponse error = 2;
+  }
+}
+
+message LoginResult {
+  oneof result {
+    LoginResponse success = 1;
+    common.ErrorResponse error = 2;
+  }
 }
 
 message LoginRequest {
@@ -28,7 +43,6 @@ message LoginRequest {
 }
 
 message LoginResponse {
-    Token token = 1;
 }
 
 message RegisterRequest {
@@ -37,7 +51,6 @@ message RegisterRequest {
 }
 
 message RegisterResponse {
-    Token token = 1;
 }
 
 message RefreshRequest {
