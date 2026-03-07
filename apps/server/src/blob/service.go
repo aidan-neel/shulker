@@ -3,6 +3,7 @@ package blob
 import (
 	"context"
 
+	blobpb "github.com/aidan-neel/shulker/apps/proto/gen/go/blob"
 	"github.com/aidan-neel/shulker/apps/server/pkg/encryption"
 	filesystem "github.com/aidan-neel/shulker/apps/server/pkg/filesystem"
 )
@@ -24,7 +25,7 @@ func NewService(repo Repository) *Service {
 	}
 }
 
-func (s *Service) Put(ctx context.Context, data []byte, userID string, filePath string, mimeType string) (*Blob, error) {
+func (s *Service) Put(ctx context.Context, data []byte, userID string, path string, mimeType string) (*blobpb.Blob, error) {
 	user_id := "019cc122-be83-74bd-a725-6aae5019bbd1"
 
 	encrypted, err := s.encryption.Encrypt(ctx, data, mimeType)
@@ -37,7 +38,7 @@ func (s *Service) Put(ctx context.Context, data []byte, userID string, filePath 
 		return nil, err
 	}
 
-	blob, err := s.repo.UpsertBlob(ctx, user_id, hash, filePath, mimeType, int64(len(data)))
+	blob, err := s.repo.UpsertBlob(ctx, user_id, hash, path, mimeType, int64(len(data)))
 	if err != nil {
 		return nil, err
 	}

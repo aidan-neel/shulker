@@ -3,6 +3,7 @@ package blob
 import (
 	"context"
 
+	blobpb "github.com/aidan-neel/shulker/apps/proto/gen/go/blob"
 	db "github.com/aidan-neel/shulker/apps/server/postgres/gen"
 	"github.com/google/uuid"
 )
@@ -15,7 +16,7 @@ func NewBlobRepo(queries *db.Queries) *BlobRepo {
 	return &BlobRepo{queries: queries}
 }
 
-func (r *BlobRepo) UpsertBlob(ctx context.Context, userID, hash, filepath, mimeType string, size int64) (*Blob, error) {
+func (r *BlobRepo) UpsertBlob(ctx context.Context, userID, hash, filepath, mimeType string, size int64) (*blobpb.Blob, error) {
 	uid, err := uuid.Parse(userID)
 	if err != nil {
 		return nil, err
@@ -33,7 +34,7 @@ func (r *BlobRepo) UpsertBlob(ctx context.Context, userID, hash, filepath, mimeT
 	return rowToBlob(row), nil
 }
 
-func (r *BlobRepo) GetBlob(ctx context.Context, id string) (*Blob, error) {
+func (r *BlobRepo) GetBlob(ctx context.Context, id string) (*blobpb.Blob, error) {
 	uid, err := uuid.Parse(id)
 	if err != nil {
 		return nil, err
@@ -45,7 +46,7 @@ func (r *BlobRepo) GetBlob(ctx context.Context, id string) (*Blob, error) {
 	return rowToBlob(row), nil
 }
 
-func (r *BlobRepo) GetBlobByHash(ctx context.Context, hash string) (*Blob, error) {
+func (r *BlobRepo) GetBlobByHash(ctx context.Context, hash string) (*blobpb.Blob, error) {
 	row, err := r.queries.GetBlobByHash(ctx, hash)
 	if err != nil {
 		return nil, err
@@ -53,7 +54,7 @@ func (r *BlobRepo) GetBlobByHash(ctx context.Context, hash string) (*Blob, error
 	return rowToBlob(row), nil
 }
 
-func (r *BlobRepo) GetBlobsByUser(ctx context.Context, userID string) ([]*Blob, error) {
+func (r *BlobRepo) GetBlobsByUser(ctx context.Context, userID string) ([]*blobpb.Blob, error) {
 	uid, err := uuid.Parse(userID)
 	if err != nil {
 		return nil, err
@@ -62,7 +63,7 @@ func (r *BlobRepo) GetBlobsByUser(ctx context.Context, userID string) ([]*Blob, 
 	if err != nil {
 		return nil, err
 	}
-	blobs := make([]*Blob, len(rows))
+	blobs := make([]*blobpb.Blob, len(rows))
 	for i, row := range rows {
 		blobs[i] = rowToBlob(row)
 	}
@@ -77,7 +78,7 @@ func (r *BlobRepo) DeleteBlob(ctx context.Context, id string) error {
 	return r.queries.DeleteBlob(ctx, uid)
 }
 
-func (r *BlobRepo) DecrementBlob(ctx context.Context, hash string) (*Blob, error) {
+func (r *BlobRepo) DecrementBlob(ctx context.Context, hash string) (*blobpb.Blob, error) {
 	row, err := r.queries.DecrementBlob(ctx, hash)
 	if err != nil {
 		return nil, err
@@ -85,10 +86,10 @@ func (r *BlobRepo) DecrementBlob(ctx context.Context, hash string) (*Blob, error
 	return rowToBlob(row), nil
 }
 
-func rowToBlob(row db.Blob) *Blob {
-	return &Blob{
-		ID:        row.ID.String(),
-		UserID:    row.UserID.String(),
+func rowToBlob(row db.Blob) *blobpb.Blob {
+	return &blobpb.Blob{
+		Id:        row.ID.String(),
+		UserId:    row.UserID.String(),
 		Hash:      row.Hash,
 		Filepath:  row.Filepath,
 		MimeType:  row.MimeType,

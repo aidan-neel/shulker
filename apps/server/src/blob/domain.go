@@ -1,21 +1,15 @@
 package blob
 
-import "context"
+import (
+	"context"
 
-type Blob struct {
-	ID        string
-	UserID    string
-	Hash      string
-	Filepath  string
-	MimeType  string
-	Size      int64
-	CreatedAt string
-}
+	blobpb "github.com/aidan-neel/shulker/apps/proto/gen/go/blob"
+)
 
 type Repository interface {
-	UpsertBlob(ctx context.Context, userID, hash, filepath, mimeType string, size int64) (*Blob, error)
-	GetBlob(ctx context.Context, id string) (*Blob, error)
-	GetBlobByHash(ctx context.Context, hash string) (*Blob, error)
-	GetBlobsByUser(ctx context.Context, userID string) ([]*Blob, error)
+	UpsertBlob(ctx context.Context, userID, hash, filepath, mimeType string, size int64) (*blobpb.Blob, error)
+	GetBlob(ctx context.Context, id string) (*blobpb.Blob, error)
+	GetBlobByHash(ctx context.Context, hash string) (*blobpb.Blob, error)
+	GetBlobsByUser(ctx context.Context, userID string) ([]*blobpb.Blob, error)
 	DeleteBlob(ctx context.Context, id string) error
 }
