@@ -1,4 +1,4 @@
-<div align="center">
+<div align="left">
   <img src="https://static.wikia.nocookie.net/minecraft_gamepedia/images/1/10/Shulker_Box.png" width="120" />
 
   # shulker
