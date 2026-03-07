@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { userClient } from '$lib/client';
+	import type { User } from '$lib/gen/user/user_pb';
 	import { onMount } from 'svelte';
 
-	let users = $state<any[]>([]);
+	let users = $state<User[]>([]);
 
 	onMount(async () => {
 		const res = await userClient.getAllUsers({});
