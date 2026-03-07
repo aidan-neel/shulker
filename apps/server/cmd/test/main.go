@@ -2,29 +2,43 @@ package main
 
 import (
 	"context"
-	"fmt"
+	"log"
+	"os"
 
-	"github.com/aidan-neel/shulker/apps/server/pkg/encryption"
-	filesystem "github.com/aidan-neel/shulker/apps/server/pkg/filesystem"
+	db "github.com/aidan-neel/shulker/apps/server/postgres/gen"
+	blob "github.com/aidan-neel/shulker/apps/server/src/blob"
+	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/jackc/pgx/v5/stdlib"
 )
 
 func main() {
+	pool, err := pgxpool.New(context.Background(), os.Getenv("DATABASE_URL"))
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer pool.Close()
+
+	sqlDB := stdlib.OpenDBFromPool(pool)
+	queries := db.New(sqlDB)
+
 	ctx := context.Background()
-	fs := filesystem.NewLocalFileSystem("./blobs")
-	aes := encryption.NewAESEncryption()
+	blobRepo := blob.NewBlobRepo(queries)
+	blobService := blob.NewService(blobRepo)
 
-	plaintext := []byte("exampleplaintext")
-	encryptedData, err := aes.Encrypt(ctx, plaintext)
+	data, err := os.ReadFile("./5MB.json")
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("Encrypted data: ", encryptedData, "\n\n")
 
-	decryptedData, err := aes.Decrypt(ctx, encryptedData)
+	blob, err := blobService.Put(ctx, data, "019cc122-be83-74bd-a725-6aae5019bbd1", "/images/hey.png", "application/json")
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
-	fmt.Println("Decrypted data: ", decryptedData, "\n\n")
-	hash, _ := fs.WriteFile(ctx, decryptedData, encryptedData)
-	fmt.Println(fs.GetFile(ctx, hash))
+
+	data, err = blobService.Get(ctx, blob.Hash)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	os.WriteFile("./test.json", data, 0644)
 }

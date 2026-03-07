@@ -1,2 +1,3 @@
 .env
 apps/server/data
+apps/server/5MB.json

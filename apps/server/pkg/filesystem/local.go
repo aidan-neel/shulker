@@ -24,6 +24,14 @@ func hashContent(r io.Reader) (string, error) {
 	return hex.EncodeToString(h.Sum(nil)), nil
 }
 
+func shouldCompress(mimeType string) bool {
+	switch mimeType {
+	case "text/plain", "text/html", "application/json", "text/csv":
+		return true
+	}
+	return false
+}
+
 func NewLocalFileSystem(root string) *LocalFileSystem {
 	newpath := filepath.Join(root)
 	os.MkdirAll(newpath, os.ModePerm)
@@ -49,4 +57,9 @@ func (s *LocalFileSystem) WriteFile(ctx context.Context, decryptedData []byte, e
 func (s *LocalFileSystem) GetFile(ctx context.Context, hash string) ([]byte, error) {
 	path := filepath.Join(s.root, hash[:2], hash)
 	return os.ReadFile(path)
+}
+
+func (s *LocalFileSystem) DeleteFile(ctx context.Context, hash string) error {
+	path := filepath.Join(s.root, hash[:2], hash)
+	return os.Remove(path)
 }

@@ -10,6 +10,17 @@ import (
 	"github.com/google/uuid"
 )
 
+type Blob struct {
+	ID        uuid.UUID
+	UserID    uuid.UUID
+	Hash      string
+	Filepath  string
+	MimeType  string
+	Size      int64
+	CreatedAt time.Time
+	RefCount  int32
+}
+
 type User struct {
 	ID           uuid.UUID
 	Email        string

@@ -16,6 +16,7 @@ import (
 	"github.com/aidan-neel/shulker/apps/proto/gen/go/user/userconnect"
 	auth "github.com/aidan-neel/shulker/apps/server/src/auth"
 	health "github.com/aidan-neel/shulker/apps/server/src/health"
+	"github.com/aidan-neel/shulker/apps/server/src/middleware"
 	user "github.com/aidan-neel/shulker/apps/server/src/user"
 
 	db "github.com/aidan-neel/shulker/apps/server/postgres/gen"
@@ -41,10 +42,10 @@ func main() {
 	mux := http.NewServeMux()
 
 	healthPath, healthHandler := healthconnect.NewHealthServiceHandler(health.New())
-	mux.Handle(healthPath, healthHandler)
+	mux.Handle(healthPath, middleware.AuthMiddleware(healthHandler))
 
 	userPath, userHandler := userconnect.NewUserServiceHandler(user.New(userService))
-	mux.Handle(userPath, userHandler)
+	mux.Handle(userPath, middleware.AuthMiddleware(userHandler))
 
 	authPath, authHandler := authconnect.NewAuthServiceHandler(auth.New(authService))
 	mux.Handle(authPath, authHandler)
