@@ -8,13 +8,17 @@ import (
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/jackc/pgx/v5/stdlib"
+	"github.com/rs/cors"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 
 	"github.com/aidan-neel/shulker/apps/proto/gen/go/auth/authconnect"
+	"github.com/aidan-neel/shulker/apps/proto/gen/go/blob/blobconnect"
 	"github.com/aidan-neel/shulker/apps/proto/gen/go/health/healthconnect"
 	"github.com/aidan-neel/shulker/apps/proto/gen/go/user/userconnect"
+	"github.com/aidan-neel/shulker/apps/server/pkg/middleware"
 	auth "github.com/aidan-neel/shulker/apps/server/src/auth"
+	blob "github.com/aidan-neel/shulker/apps/server/src/blob"
 	health "github.com/aidan-neel/shulker/apps/server/src/health"
 	user "github.com/aidan-neel/shulker/apps/server/src/user"
 
@@ -38,13 +42,20 @@ func main() {
 	userService := user.NewService(userRepo)
 	authService := auth.NewService(userRepo)
 
+	blobRepo := blob.NewBlobRepo(queries)
+	userBlobRepo := blob.NewUserBlobRepo(queries)
+	blobService := blob.NewService(blobRepo, userBlobRepo)
+
 	mux := http.NewServeMux()
 
 	healthPath, healthHandler := healthconnect.NewHealthServiceHandler(health.New())
-	mux.Handle(healthPath, healthHandler)
+	mux.Handle(healthPath, middleware.AuthMiddleware(healthHandler))
 
 	userPath, userHandler := userconnect.NewUserServiceHandler(user.New(userService))
-	mux.Handle(userPath, userHandler)
+	mux.Handle(userPath, middleware.AuthMiddleware(userHandler))
+
+	blobPath, blobHandler := blobconnect.NewBlobServiceHandler(blob.New(blobService))
+	mux.Handle(blobPath, middleware.AuthMiddleware(blobHandler))
 
 	authPath, authHandler := authconnect.NewAuthServiceHandler(auth.New(authService))
 	mux.Handle(authPath, authHandler)
@@ -66,15 +77,24 @@ func main() {
 <script>
 window.onload = function() {
     SwaggerUIBundle({
-		urls: [
-			{ url: "/docs/swagger/health/health.swagger.json", name: "Health" },
-			{ url: "/docs/swagger/user/user.swagger.json", name: "User" },
-			{ url: "/docs/swagger/auth/auth.swagger.json", name: "Auth" },
-		],
+        urls: [
+            { url: "/docs/swagger/health/health.swagger.json", name: "Health" },
+            { url: "/docs/swagger/user/user.swagger.json", name: "User" },
+            { url: "/docs/swagger/auth/auth.swagger.json", name: "Auth" },
+            { url: "/docs/swagger/blob/blob.swagger.json", name: "Blob" },
+        ],
         "urls.primaryName": "Health",
         dom_id: '#swagger-ui',
         presets: [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset],
-        layout: "StandaloneLayout"
+        layout: "StandaloneLayout",
+        persistAuthorization: true,
+        securityDefinitions: {
+            Bearer: {
+                type: "apiKey",
+                in: "header",
+                name: "Authorization"
+            }
+        }
     })
 }
 </script>
@@ -82,8 +102,26 @@ window.onload = function() {
 </html>`))
 	})
 
+	c := cors.New(cors.Options{
+		AllowedOrigins: []string{"http://localhost:5173"},
+		AllowedMethods: []string{
+			http.MethodPost,
+		},
+		AllowedHeaders: []string{
+			"Content-Type",
+			"Connect-Protocol-Version",
+			"Connect-Timeout-Ms",
+			"Grpc-Timeout",
+			"Authorization",
+		},
+		ExposedHeaders: []string{
+			"Grpc-Status",
+			"Grpc-Message",
+		},
+	})
+
 	log.Println("listening on :8080")
-	if err := http.ListenAndServe(":8080", h2c.NewHandler(mux, &http2.Server{})); err != nil {
+	if err := http.ListenAndServe(":8080", c.Handler(h2c.NewHandler(mux, &http2.Server{}))); err != nil {
 		log.Fatal(err)
 	}
 }

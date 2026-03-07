@@ -15,7 +15,7 @@ func NewUserRepo(queries *db.Queries) *UserRepo {
 	return &UserRepo{queries: queries}
 }
 
-func (r *UserRepo) CreateUser(ctx context.Context, email, passwordHash string) (*User, error) {
+func (r *UserRepo) CreateUser(ctx context.Context, email string, passwordHash string) (*User, error) {
 	row, err := r.queries.CreateUser(ctx, db.CreateUserParams{
 		Email:        email,
 		PasswordHash: passwordHash,

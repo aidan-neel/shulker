@@ -3,7 +3,7 @@ include apps/server/.env
 export
 
 gen:
-	cd apps/proto && buf generate
+	cd apps/proto && buf generate --include-imports
 	cd apps/server && sqlc generate && go mod tidy
 
 gen-upd:
@@ -11,7 +11,13 @@ gen-upd:
 	cd apps/server && go mod tidy
 
 dev:
+	make dev-server & make dev-web
+
+dev-server:
 	cd apps/server && go run cmd/server/main.go
+
+dev-web:
+	cd apps/web && bun run dev
 
 test:
 	cd apps/server && go run cmd/test/main.go

@@ -7,6 +7,7 @@
 package blob
 
 import (
+	_ "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
@@ -22,19 +23,186 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type UserBlob struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	UserId        string                 `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	BlobId        string                 `protobuf:"bytes,3,opt,name=blob_id,json=blobId,proto3" json:"blob_id,omitempty"`
+	Path          string                 `protobuf:"bytes,4,opt,name=path,proto3" json:"path,omitempty"`
+	CreatedAt     string                 `protobuf:"bytes,5,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UserBlob) Reset() {
+	*x = UserBlob{}
+	mi := &file_blob_blob_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UserBlob) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UserBlob) ProtoMessage() {}
+
+func (x *UserBlob) ProtoReflect() protoreflect.Message {
+	mi := &file_blob_blob_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UserBlob.ProtoReflect.Descriptor instead.
+func (*UserBlob) Descriptor() ([]byte, []int) {
+	return file_blob_blob_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *UserBlob) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *UserBlob) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *UserBlob) GetBlobId() string {
+	if x != nil {
+		return x.BlobId
+	}
+	return ""
+}
+
+func (x *UserBlob) GetPath() string {
+	if x != nil {
+		return x.Path
+	}
+	return ""
+}
+
+func (x *UserBlob) GetCreatedAt() string {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return ""
+}
+
+type Blob struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	UserId        string                 `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	Hash          string                 `protobuf:"bytes,3,opt,name=hash,proto3" json:"hash,omitempty"`
+	Filepath      string                 `protobuf:"bytes,4,opt,name=filepath,proto3" json:"filepath,omitempty"`
+	MimeType      string                 `protobuf:"bytes,5,opt,name=mime_type,json=mimeType,proto3" json:"mime_type,omitempty"`
+	Size          int64                  `protobuf:"varint,6,opt,name=size,proto3" json:"size,omitempty"`
+	CreatedAt     string                 `protobuf:"bytes,7,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Blob) Reset() {
+	*x = Blob{}
+	mi := &file_blob_blob_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Blob) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Blob) ProtoMessage() {}
+
+func (x *Blob) ProtoReflect() protoreflect.Message {
+	mi := &file_blob_blob_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Blob.ProtoReflect.Descriptor instead.
+func (*Blob) Descriptor() ([]byte, []int) {
+	return file_blob_blob_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *Blob) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *Blob) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *Blob) GetHash() string {
+	if x != nil {
+		return x.Hash
+	}
+	return ""
+}
+
+func (x *Blob) GetFilepath() string {
+	if x != nil {
+		return x.Filepath
+	}
+	return ""
+}
+
+func (x *Blob) GetMimeType() string {
+	if x != nil {
+		return x.MimeType
+	}
+	return ""
+}
+
+func (x *Blob) GetSize() int64 {
+	if x != nil {
+		return x.Size
+	}
+	return 0
+}
+
+func (x *Blob) GetCreatedAt() string {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return ""
+}
+
 type PutBlobRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Filename      string                 `protobuf:"bytes,1,opt,name=filename,proto3" json:"filename,omitempty"`
-	ContentType   string                 `protobuf:"bytes,2,opt,name=content_type,json=contentType,proto3" json:"content_type,omitempty"`
-	Size          int64                  `protobuf:"varint,3,opt,name=size,proto3" json:"size,omitempty"`
-	Data          []byte                 `protobuf:"bytes,4,opt,name=data,proto3" json:"data,omitempty"`
+	Path          string                 `protobuf:"bytes,1,opt,name=path,proto3" json:"path,omitempty"`
+	Data          []byte                 `protobuf:"bytes,2,opt,name=data,proto3" json:"data,omitempty"`
+	MimeType      string                 `protobuf:"bytes,3,opt,name=mime_type,json=mimeType,proto3" json:"mime_type,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *PutBlobRequest) Reset() {
 	*x = PutBlobRequest{}
-	mi := &file_blob_blob_proto_msgTypes[0]
+	mi := &file_blob_blob_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -46,7 +214,7 @@ func (x *PutBlobRequest) String() string {
 func (*PutBlobRequest) ProtoMessage() {}
 
 func (x *PutBlobRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_blob_blob_proto_msgTypes[0]
+	mi := &file_blob_blob_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -59,28 +227,14 @@ func (x *PutBlobRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PutBlobRequest.ProtoReflect.Descriptor instead.
 func (*PutBlobRequest) Descriptor() ([]byte, []int) {
-	return file_blob_blob_proto_rawDescGZIP(), []int{0}
+	return file_blob_blob_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *PutBlobRequest) GetFilename() string {
+func (x *PutBlobRequest) GetPath() string {
 	if x != nil {
-		return x.Filename
+		return x.Path
 	}
 	return ""
-}
-
-func (x *PutBlobRequest) GetContentType() string {
-	if x != nil {
-		return x.ContentType
-	}
-	return ""
-}
-
-func (x *PutBlobRequest) GetSize() int64 {
-	if x != nil {
-		return x.Size
-	}
-	return 0
 }
 
 func (x *PutBlobRequest) GetData() []byte {
@@ -90,16 +244,92 @@ func (x *PutBlobRequest) GetData() []byte {
 	return nil
 }
 
+func (x *PutBlobRequest) GetMimeType() string {
+	if x != nil {
+		return x.MimeType
+	}
+	return ""
+}
+
+type PutBlobResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Blob          *Blob                  `protobuf:"bytes,1,opt,name=blob,proto3" json:"blob,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PutBlobResponse) Reset() {
+	*x = PutBlobResponse{}
+	mi := &file_blob_blob_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PutBlobResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PutBlobResponse) ProtoMessage() {}
+
+func (x *PutBlobResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_blob_blob_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PutBlobResponse.ProtoReflect.Descriptor instead.
+func (*PutBlobResponse) Descriptor() ([]byte, []int) {
+	return file_blob_blob_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *PutBlobResponse) GetBlob() *Blob {
+	if x != nil {
+		return x.Blob
+	}
+	return nil
+}
+
 var File_blob_blob_proto protoreflect.FileDescriptor
 
 const file_blob_blob_proto_rawDesc = "" +
 	"\n" +
-	"\x0fblob/blob.proto\x12\x04blob\x1a\x1cgoogle/api/annotations.proto\"w\n" +
-	"\x0ePutBlobRequest\x12\x1a\n" +
-	"\bfilename\x18\x01 \x01(\tR\bfilename\x12!\n" +
-	"\fcontent_type\x18\x02 \x01(\tR\vcontentType\x12\x12\n" +
-	"\x04size\x18\x03 \x01(\x03R\x04size\x12\x12\n" +
-	"\x04data\x18\x04 \x01(\fR\x04dataB;Z9github.com/aidan-neel/shulker/apps/proto/gen/go/blob;blobb\x06proto3"
+	"\x0fblob/blob.proto\x12\x04blob\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"\x7f\n" +
+	"\bUserBlob\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x17\n" +
+	"\auser_id\x18\x02 \x01(\tR\x06userId\x12\x17\n" +
+	"\ablob_id\x18\x03 \x01(\tR\x06blobId\x12\x12\n" +
+	"\x04path\x18\x04 \x01(\tR\x04path\x12\x1d\n" +
+	"\n" +
+	"created_at\x18\x05 \x01(\tR\tcreatedAt\"\xaf\x01\n" +
+	"\x04Blob\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x17\n" +
+	"\auser_id\x18\x02 \x01(\tR\x06userId\x12\x12\n" +
+	"\x04hash\x18\x03 \x01(\tR\x04hash\x12\x1a\n" +
+	"\bfilepath\x18\x04 \x01(\tR\bfilepath\x12\x1b\n" +
+	"\tmime_type\x18\x05 \x01(\tR\bmimeType\x12\x12\n" +
+	"\x04size\x18\x06 \x01(\x03R\x04size\x12\x1d\n" +
+	"\n" +
+	"created_at\x18\a \x01(\tR\tcreatedAt\"U\n" +
+	"\x0ePutBlobRequest\x12\x12\n" +
+	"\x04path\x18\x01 \x01(\tR\x04path\x12\x12\n" +
+	"\x04data\x18\x02 \x01(\fR\x04data\x12\x1b\n" +
+	"\tmime_type\x18\x03 \x01(\tR\bmimeType\"1\n" +
+	"\x0fPutBlobResponse\x12\x1e\n" +
+	"\x04blob\x18\x01 \x01(\v2\n" +
+	".blob.BlobR\x04blob2k\n" +
+	"\vBlobService\x12\\\n" +
+	"\aPutBlob\x12\x14.blob.PutBlobRequest\x1a\x15.blob.PutBlobResponse\"$\x82\xd3\xe4\x93\x02\x1e:\x01*\"\x19/blob.BlobService/PutBlobBm\x92A/Z\x1f\n" +
+	"\x1d\n" +
+	"\x06Bearer\x12\x13\b\x02\x1a\rAuthorization \x02b\f\n" +
+	"\n" +
+	"\n" +
+	"\x06Bearer\x12\x00Z9github.com/aidan-neel/shulker/apps/proto/gen/go/blob;blobb\x06proto3"
 
 var (
 	file_blob_blob_proto_rawDescOnce sync.Once
@@ -113,16 +343,22 @@ func file_blob_blob_proto_rawDescGZIP() []byte {
 	return file_blob_blob_proto_rawDescData
 }
 
-var file_blob_blob_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_blob_blob_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_blob_blob_proto_goTypes = []any{
-	(*PutBlobRequest)(nil), // 0: blob.PutBlobRequest
+	(*UserBlob)(nil),        // 0: blob.UserBlob
+	(*Blob)(nil),            // 1: blob.Blob
+	(*PutBlobRequest)(nil),  // 2: blob.PutBlobRequest
+	(*PutBlobResponse)(nil), // 3: blob.PutBlobResponse
 }
 var file_blob_blob_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	1, // 0: blob.PutBlobResponse.blob:type_name -> blob.Blob
+	2, // 1: blob.BlobService.PutBlob:input_type -> blob.PutBlobRequest
+	3, // 2: blob.BlobService.PutBlob:output_type -> blob.PutBlobResponse
+	2, // [2:3] is the sub-list for method output_type
+	1, // [1:2] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_blob_blob_proto_init() }
@@ -136,9 +372,9 @@ func file_blob_blob_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_blob_blob_proto_rawDesc), len(file_blob_blob_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   1,
+			NumMessages:   4,
 			NumExtensions: 0,
-			NumServices:   0,
+			NumServices:   1,
 		},
 		GoTypes:           file_blob_blob_proto_goTypes,
 		DependencyIndexes: file_blob_blob_proto_depIdxs,

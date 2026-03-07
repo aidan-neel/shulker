@@ -12,3 +12,9 @@ plugins:
 
   - local: protoc-gen-openapiv2
     out: gen/openapi
+
+  - remote: buf.build/bufbuild/es
+    out: ../../apps/web/src/lib/gen
+    opt:
+      - target=ts
+      - js_import_style=module
