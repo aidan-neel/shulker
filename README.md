@@ -1,9 +1,8 @@
+<img src="https://static.wikia.nocookie.net/minecraft_gamepedia/images/1/10/Shulker_Box.png" align="left" width="100" />
+
 # shulker
-cloud storage personal project
+Cloud storage personal project.
 
+Using: `go / typescript / protobuf / docker`
 
-using:
-`go / typescript / protobuf / docker`
-
-
-see `Makefile` for commands to run :)
+See `Makefile` for commands to run
