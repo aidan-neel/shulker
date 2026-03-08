@@ -7,7 +7,9 @@ import (
 	authv1 "github.com/aidan-neel/shulker/apps/proto/gen/go/auth"
 	"github.com/aidan-neel/shulker/apps/proto/gen/go/auth/authconnect"
 	commonv1 "github.com/aidan-neel/shulker/apps/proto/gen/go/common"
+	userv1 "github.com/aidan-neel/shulker/apps/proto/gen/go/user"
 	"github.com/aidan-neel/shulker/apps/server/pkg/middleware"
+	"github.com/aidan-neel/shulker/apps/server/src/user"
 )
 
 type Handler struct {
@@ -19,6 +21,14 @@ func New(service *Service) *Handler {
 }
 
 var _ authconnect.AuthServiceHandler = (*Handler)(nil)
+
+func toProtoUser(u *user.User) *userv1.User {
+	return &userv1.User{
+		Id:        u.ID,
+		Email:     u.Email,
+		CreatedAt: u.CreatedAt,
+	}
+}
 
 func (h *Handler) Register(
 	ctx context.Context,
@@ -68,6 +78,32 @@ func (h *Handler) Login(
 	return connect.NewResponse(&authv1.LoginResult{
 		Result: &authv1.LoginResult_Success{
 			Success: &authv1.LoginResponse{},
+		},
+	}), nil
+}
+
+func (h *Handler) CurrentUser(
+	ctx context.Context,
+	req *connect.Request[authv1.CurrentUserRequest],
+) (*connect.Response[authv1.CurrentUserResult], error) {
+
+	u, err := h.service.CurrentUser(ctx)
+	if err != nil {
+		return connect.NewResponse(&authv1.CurrentUserResult{
+			Result: &authv1.CurrentUserResult_Error{
+				Error: &commonv1.ErrorResponse{
+					Code:    "INVALID_ARGUMENT",
+					Message: err.Error(),
+				},
+			},
+		}), nil
+	}
+
+	return connect.NewResponse(&authv1.CurrentUserResult{
+		Result: &authv1.CurrentUserResult_Success{
+			Success: &authv1.CurrentUserResponse{
+				Me: toProtoUser(u),
+			},
 		},
 	}), nil
 }

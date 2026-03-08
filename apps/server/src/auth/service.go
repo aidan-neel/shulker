@@ -6,15 +6,17 @@ import (
 	"os"
 	"time"
 
+	"github.com/aidan-neel/shulker/apps/server/pkg/middleware"
 	"github.com/aidan-neel/shulker/apps/server/pkg/utils"
+	"github.com/aidan-neel/shulker/apps/server/src/user"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type Service struct {
-	repo Repository
+	repo user.Repository
 }
 
-func NewService(repo Repository) *Service {
+func NewService(repo user.Repository) *Service {
 	return &Service{repo: repo}
 }
 
@@ -45,6 +47,20 @@ func (s *Service) Register(ctx context.Context, email string, password string) (
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
 	}, nil
+}
+
+func (s *Service) CurrentUser(ctx context.Context) (*user.User, error) {
+	userID, ok := middleware.GetUserID(ctx)
+	if !ok {
+		return nil, fmt.Errorf("unauthorized")
+	}
+
+	user, err := s.repo.GetUser(ctx, userID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch user: %w", err)
+	}
+
+	return user, nil
 }
 
 func (s *Service) Login(ctx context.Context, email string, password string) (*Token, error) {

@@ -16,6 +16,38 @@
     "application/json"
   ],
   "paths": {
+    "/auth.AuthService/CurrentUser": {
+      "post": {
+        "operationId": "AuthService_CurrentUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/authCurrentUserResult"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/authCurrentUserRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AuthService"
+        ]
+      }
+    },
     "/auth.AuthService/Login": {
       "post": {
         "operationId": "AuthService_Login",
@@ -82,6 +114,28 @@
     }
   },
   "definitions": {
+    "authCurrentUserRequest": {
+      "type": "object"
+    },
+    "authCurrentUserResponse": {
+      "type": "object",
+      "properties": {
+        "me": {
+          "$ref": "#/definitions/userUser"
+        }
+      }
+    },
+    "authCurrentUserResult": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "$ref": "#/definitions/authCurrentUserResponse"
+        },
+        "error": {
+          "$ref": "#/definitions/commonErrorResponse"
+        }
+      }
+    },
     "authLoginRequest": {
       "type": "object",
       "properties": {
@@ -168,6 +222,23 @@
             "type": "object",
             "$ref": "#/definitions/protobufAny"
           }
+        }
+      }
+    },
+    "userUser": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "passwordHash": {
+          "type": "string"
         }
       }
     }

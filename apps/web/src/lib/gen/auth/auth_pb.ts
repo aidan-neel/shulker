@@ -7,13 +7,15 @@ import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2
 import { file_google_api_annotations } from "../google/api/annotations_pb";
 import type { ErrorResponse } from "../common/error_pb";
 import { file_common_error } from "../common/error_pb";
+import type { User } from "../user/user_pb";
+import { file_user_user } from "../user/user_pb";
 import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file auth/auth.proto.
  */
 export const file_auth_auth: GenFile = /*@__PURE__*/
-  fileDesc("Cg9hdXRoL2F1dGgucHJvdG8SBGF1dGgibQoOUmVnaXN0ZXJSZXN1bHQSKQoHc3VjY2VzcxgBIAEoCzIWLmF1dGguUmVnaXN0ZXJSZXNwb25zZUgAEiYKBWVycm9yGAIgASgLMhUuY29tbW9uLkVycm9yUmVzcG9uc2VIAEIICgZyZXN1bHQiZwoLTG9naW5SZXN1bHQSJgoHc3VjY2VzcxgBIAEoCzITLmF1dGguTG9naW5SZXNwb25zZUgAEiYKBWVycm9yGAIgASgLMhUuY29tbW9uLkVycm9yUmVzcG9uc2VIAEIICgZyZXN1bHQiLwoMTG9naW5SZXF1ZXN0Eg0KBWVtYWlsGAEgASgJEhAKCHBhc3N3b3JkGAIgASgJIg8KDUxvZ2luUmVzcG9uc2UiMgoPUmVnaXN0ZXJSZXF1ZXN0Eg0KBWVtYWlsGAEgASgJEhAKCHBhc3N3b3JkGAIgASgJIhIKEFJlZ2lzdGVyUmVzcG9uc2UiJwoOUmVmcmVzaFJlcXVlc3QSFQoNcmVmcmVzaF90b2tlbhgBIAEoCSItCg9SZWZyZXNoUmVzcG9uc2USGgoFdG9rZW4YASABKAsyCy5hdXRoLlRva2VuIjQKBVRva2VuEhQKDGFjY2Vzc190b2tlbhgBIAEoCRIVCg1yZWZyZXNoX3Rva2VuGAIgASgJMsEBCgtBdXRoU2VydmljZRJSCgVMb2dpbhISLmF1dGguTG9naW5SZXF1ZXN0GhEuYXV0aC5Mb2dpblJlc3VsdCIigtPkkwIcOgEqIhcvYXV0aC5BdXRoU2VydmljZS9Mb2dpbhJeCghSZWdpc3RlchIVLmF1dGguUmVnaXN0ZXJSZXF1ZXN0GhQuYXV0aC5SZWdpc3RlclJlc3VsdCIlgtPkkwIfOgEqIhovYXV0aC5BdXRoU2VydmljZS9SZWdpc3RlckI7WjlnaXRodWIuY29tL2FpZGFuLW5lZWwvc2h1bGtlci9hcHBzL3Byb3RvL2dlbi9nby9hdXRoO2F1dGhiBnByb3RvMw", [file_google_api_annotations, file_common_error]);
+  fileDesc("Cg9hdXRoL2F1dGgucHJvdG8SBGF1dGgibQoOUmVnaXN0ZXJSZXN1bHQSKQoHc3VjY2VzcxgBIAEoCzIWLmF1dGguUmVnaXN0ZXJSZXNwb25zZUgAEiYKBWVycm9yGAIgASgLMhUuY29tbW9uLkVycm9yUmVzcG9uc2VIAEIICgZyZXN1bHQicwoRQ3VycmVudFVzZXJSZXN1bHQSLAoHc3VjY2VzcxgBIAEoCzIZLmF1dGguQ3VycmVudFVzZXJSZXNwb25zZUgAEiYKBWVycm9yGAIgASgLMhUuY29tbW9uLkVycm9yUmVzcG9uc2VIAEIICgZyZXN1bHQiZwoLTG9naW5SZXN1bHQSJgoHc3VjY2VzcxgBIAEoCzITLmF1dGguTG9naW5SZXNwb25zZUgAEiYKBWVycm9yGAIgASgLMhUuY29tbW9uLkVycm9yUmVzcG9uc2VIAEIICgZyZXN1bHQiLwoMTG9naW5SZXF1ZXN0Eg0KBWVtYWlsGAEgASgJEhAKCHBhc3N3b3JkGAIgASgJIg8KDUxvZ2luUmVzcG9uc2UiFAoSQ3VycmVudFVzZXJSZXF1ZXN0Ii0KE0N1cnJlbnRVc2VyUmVzcG9uc2USFgoCbWUYASABKAsyCi51c2VyLlVzZXIiMgoPUmVnaXN0ZXJSZXF1ZXN0Eg0KBWVtYWlsGAEgASgJEhAKCHBhc3N3b3JkGAIgASgJIhIKEFJlZ2lzdGVyUmVzcG9uc2UiJwoOUmVmcmVzaFJlcXVlc3QSFQoNcmVmcmVzaF90b2tlbhgBIAEoCSItCg9SZWZyZXNoUmVzcG9uc2USGgoFdG9rZW4YASABKAsyCy5hdXRoLlRva2VuIjQKBVRva2VuEhQKDGFjY2Vzc190b2tlbhgBIAEoCRIVCg1yZWZyZXNoX3Rva2VuGAIgASgJMq0CCgtBdXRoU2VydmljZRJSCgVMb2dpbhISLmF1dGguTG9naW5SZXF1ZXN0GhEuYXV0aC5Mb2dpblJlc3VsdCIigtPkkwIcOgEqIhcvYXV0aC5BdXRoU2VydmljZS9Mb2dpbhJeCghSZWdpc3RlchIVLmF1dGguUmVnaXN0ZXJSZXF1ZXN0GhQuYXV0aC5SZWdpc3RlclJlc3VsdCIlgtPkkwIfOgEqIhovYXV0aC5BdXRoU2VydmljZS9SZWdpc3RlchJqCgtDdXJyZW50VXNlchIYLmF1dGguQ3VycmVudFVzZXJSZXF1ZXN0GhcuYXV0aC5DdXJyZW50VXNlclJlc3VsdCIogtPkkwIiOgEqIh0vYXV0aC5BdXRoU2VydmljZS9DdXJyZW50VXNlckI7WjlnaXRodWIuY29tL2FpZGFuLW5lZWwvc2h1bGtlci9hcHBzL3Byb3RvL2dlbi9nby9hdXRoO2F1dGhiBnByb3RvMw", [file_google_api_annotations, file_common_error, file_user_user]);
 
 /**
  * @generated from message auth.RegisterResult
@@ -45,6 +47,35 @@ export const RegisterResultSchema: GenMessage<RegisterResult> = /*@__PURE__*/
   messageDesc(file_auth_auth, 0);
 
 /**
+ * @generated from message auth.CurrentUserResult
+ */
+export type CurrentUserResult = Message<"auth.CurrentUserResult"> & {
+  /**
+   * @generated from oneof auth.CurrentUserResult.result
+   */
+  result: {
+    /**
+     * @generated from field: auth.CurrentUserResponse success = 1;
+     */
+    value: CurrentUserResponse;
+    case: "success";
+  } | {
+    /**
+     * @generated from field: common.ErrorResponse error = 2;
+     */
+    value: ErrorResponse;
+    case: "error";
+  } | { case: undefined; value?: undefined };
+};
+
+/**
+ * Describes the message auth.CurrentUserResult.
+ * Use `create(CurrentUserResultSchema)` to create a new message.
+ */
+export const CurrentUserResultSchema: GenMessage<CurrentUserResult> = /*@__PURE__*/
+  messageDesc(file_auth_auth, 1);
+
+/**
  * @generated from message auth.LoginResult
  */
 export type LoginResult = Message<"auth.LoginResult"> & {
@@ -71,7 +102,7 @@ export type LoginResult = Message<"auth.LoginResult"> & {
  * Use `create(LoginResultSchema)` to create a new message.
  */
 export const LoginResultSchema: GenMessage<LoginResult> = /*@__PURE__*/
-  messageDesc(file_auth_auth, 1);
+  messageDesc(file_auth_auth, 2);
 
 /**
  * @generated from message auth.LoginRequest
@@ -93,7 +124,7 @@ export type LoginRequest = Message<"auth.LoginRequest"> & {
  * Use `create(LoginRequestSchema)` to create a new message.
  */
 export const LoginRequestSchema: GenMessage<LoginRequest> = /*@__PURE__*/
-  messageDesc(file_auth_auth, 2);
+  messageDesc(file_auth_auth, 3);
 
 /**
  * @generated from message auth.LoginResponse
@@ -106,7 +137,37 @@ export type LoginResponse = Message<"auth.LoginResponse"> & {
  * Use `create(LoginResponseSchema)` to create a new message.
  */
 export const LoginResponseSchema: GenMessage<LoginResponse> = /*@__PURE__*/
-  messageDesc(file_auth_auth, 3);
+  messageDesc(file_auth_auth, 4);
+
+/**
+ * @generated from message auth.CurrentUserRequest
+ */
+export type CurrentUserRequest = Message<"auth.CurrentUserRequest"> & {
+};
+
+/**
+ * Describes the message auth.CurrentUserRequest.
+ * Use `create(CurrentUserRequestSchema)` to create a new message.
+ */
+export const CurrentUserRequestSchema: GenMessage<CurrentUserRequest> = /*@__PURE__*/
+  messageDesc(file_auth_auth, 5);
+
+/**
+ * @generated from message auth.CurrentUserResponse
+ */
+export type CurrentUserResponse = Message<"auth.CurrentUserResponse"> & {
+  /**
+   * @generated from field: user.User me = 1;
+   */
+  me?: User;
+};
+
+/**
+ * Describes the message auth.CurrentUserResponse.
+ * Use `create(CurrentUserResponseSchema)` to create a new message.
+ */
+export const CurrentUserResponseSchema: GenMessage<CurrentUserResponse> = /*@__PURE__*/
+  messageDesc(file_auth_auth, 6);
 
 /**
  * @generated from message auth.RegisterRequest
@@ -128,7 +189,7 @@ export type RegisterRequest = Message<"auth.RegisterRequest"> & {
  * Use `create(RegisterRequestSchema)` to create a new message.
  */
 export const RegisterRequestSchema: GenMessage<RegisterRequest> = /*@__PURE__*/
-  messageDesc(file_auth_auth, 4);
+  messageDesc(file_auth_auth, 7);
 
 /**
  * @generated from message auth.RegisterResponse
@@ -141,7 +202,7 @@ export type RegisterResponse = Message<"auth.RegisterResponse"> & {
  * Use `create(RegisterResponseSchema)` to create a new message.
  */
 export const RegisterResponseSchema: GenMessage<RegisterResponse> = /*@__PURE__*/
-  messageDesc(file_auth_auth, 5);
+  messageDesc(file_auth_auth, 8);
 
 /**
  * @generated from message auth.RefreshRequest
@@ -158,7 +219,7 @@ export type RefreshRequest = Message<"auth.RefreshRequest"> & {
  * Use `create(RefreshRequestSchema)` to create a new message.
  */
 export const RefreshRequestSchema: GenMessage<RefreshRequest> = /*@__PURE__*/
-  messageDesc(file_auth_auth, 6);
+  messageDesc(file_auth_auth, 9);
 
 /**
  * @generated from message auth.RefreshResponse
@@ -175,7 +236,7 @@ export type RefreshResponse = Message<"auth.RefreshResponse"> & {
  * Use `create(RefreshResponseSchema)` to create a new message.
  */
 export const RefreshResponseSchema: GenMessage<RefreshResponse> = /*@__PURE__*/
-  messageDesc(file_auth_auth, 7);
+  messageDesc(file_auth_auth, 10);
 
 /**
  * @generated from message auth.Token
@@ -197,7 +258,7 @@ export type Token = Message<"auth.Token"> & {
  * Use `create(TokenSchema)` to create a new message.
  */
 export const TokenSchema: GenMessage<Token> = /*@__PURE__*/
-  messageDesc(file_auth_auth, 8);
+  messageDesc(file_auth_auth, 11);
 
 /**
  * @generated from service auth.AuthService
@@ -218,6 +279,14 @@ export const AuthService: GenService<{
     methodKind: "unary";
     input: typeof RegisterRequestSchema;
     output: typeof RegisterResultSchema;
+  },
+  /**
+   * @generated from rpc auth.AuthService.CurrentUser
+   */
+  currentUser: {
+    methodKind: "unary";
+    input: typeof CurrentUserRequestSchema;
+    output: typeof CurrentUserResultSchema;
   },
 }> = /*@__PURE__*/
   serviceDesc(file_auth_auth, 0);

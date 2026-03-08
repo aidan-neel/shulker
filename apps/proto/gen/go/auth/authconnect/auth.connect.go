@@ -37,12 +37,15 @@ const (
 	AuthServiceLoginProcedure = "/auth.AuthService/Login"
 	// AuthServiceRegisterProcedure is the fully-qualified name of the AuthService's Register RPC.
 	AuthServiceRegisterProcedure = "/auth.AuthService/Register"
+	// AuthServiceCurrentUserProcedure is the fully-qualified name of the AuthService's CurrentUser RPC.
+	AuthServiceCurrentUserProcedure = "/auth.AuthService/CurrentUser"
 )
 
 // AuthServiceClient is a client for the auth.AuthService service.
 type AuthServiceClient interface {
 	Login(context.Context, *connect.Request[auth.LoginRequest]) (*connect.Response[auth.LoginResult], error)
 	Register(context.Context, *connect.Request[auth.RegisterRequest]) (*connect.Response[auth.RegisterResult], error)
+	CurrentUser(context.Context, *connect.Request[auth.CurrentUserRequest]) (*connect.Response[auth.CurrentUserResult], error)
 }
 
 // NewAuthServiceClient constructs a client for the auth.AuthService service. By default, it uses
@@ -68,13 +71,20 @@ func NewAuthServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 			connect.WithSchema(authServiceMethods.ByName("Register")),
 			connect.WithClientOptions(opts...),
 		),
+		currentUser: connect.NewClient[auth.CurrentUserRequest, auth.CurrentUserResult](
+			httpClient,
+			baseURL+AuthServiceCurrentUserProcedure,
+			connect.WithSchema(authServiceMethods.ByName("CurrentUser")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
 // authServiceClient implements AuthServiceClient.
 type authServiceClient struct {
-	login    *connect.Client[auth.LoginRequest, auth.LoginResult]
-	register *connect.Client[auth.RegisterRequest, auth.RegisterResult]
+	login       *connect.Client[auth.LoginRequest, auth.LoginResult]
+	register    *connect.Client[auth.RegisterRequest, auth.RegisterResult]
+	currentUser *connect.Client[auth.CurrentUserRequest, auth.CurrentUserResult]
 }
 
 // Login calls auth.AuthService.Login.
@@ -87,10 +97,16 @@ func (c *authServiceClient) Register(ctx context.Context, req *connect.Request[a
 	return c.register.CallUnary(ctx, req)
 }
 
+// CurrentUser calls auth.AuthService.CurrentUser.
+func (c *authServiceClient) CurrentUser(ctx context.Context, req *connect.Request[auth.CurrentUserRequest]) (*connect.Response[auth.CurrentUserResult], error) {
+	return c.currentUser.CallUnary(ctx, req)
+}
+
 // AuthServiceHandler is an implementation of the auth.AuthService service.
 type AuthServiceHandler interface {
 	Login(context.Context, *connect.Request[auth.LoginRequest]) (*connect.Response[auth.LoginResult], error)
 	Register(context.Context, *connect.Request[auth.RegisterRequest]) (*connect.Response[auth.RegisterResult], error)
+	CurrentUser(context.Context, *connect.Request[auth.CurrentUserRequest]) (*connect.Response[auth.CurrentUserResult], error)
 }
 
 // NewAuthServiceHandler builds an HTTP handler from the service implementation. It returns the path
@@ -112,12 +128,20 @@ func NewAuthServiceHandler(svc AuthServiceHandler, opts ...connect.HandlerOption
 		connect.WithSchema(authServiceMethods.ByName("Register")),
 		connect.WithHandlerOptions(opts...),
 	)
+	authServiceCurrentUserHandler := connect.NewUnaryHandler(
+		AuthServiceCurrentUserProcedure,
+		svc.CurrentUser,
+		connect.WithSchema(authServiceMethods.ByName("CurrentUser")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/auth.AuthService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case AuthServiceLoginProcedure:
 			authServiceLoginHandler.ServeHTTP(w, r)
 		case AuthServiceRegisterProcedure:
 			authServiceRegisterHandler.ServeHTTP(w, r)
+		case AuthServiceCurrentUserProcedure:
+			authServiceCurrentUserHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -133,4 +157,8 @@ func (UnimplementedAuthServiceHandler) Login(context.Context, *connect.Request[a
 
 func (UnimplementedAuthServiceHandler) Register(context.Context, *connect.Request[auth.RegisterRequest]) (*connect.Response[auth.RegisterResult], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("auth.AuthService.Register is not implemented"))
+}
+
+func (UnimplementedAuthServiceHandler) CurrentUser(context.Context, *connect.Request[auth.CurrentUserRequest]) (*connect.Response[auth.CurrentUserResult], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("auth.AuthService.CurrentUser is not implemented"))
 }

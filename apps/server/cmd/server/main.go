@@ -58,7 +58,7 @@ func main() {
 	mux.Handle(blobPath, middleware.AuthMiddleware(blobHandler))
 
 	authPath, authHandler := authconnect.NewAuthServiceHandler(auth.New(authService))
-	mux.Handle(authPath, middleware.InjectResponseWriter(authHandler))
+	mux.Handle(authPath, middleware.InjectResponseWriter(middleware.AuthMiddleware(authHandler)))
 
 	mux.Handle("/docs/swagger/", http.StripPrefix("/docs/swagger/", http.FileServer(http.Dir("../proto/gen/openapi"))))
 	mux.HandleFunc("/docs/", func(w http.ResponseWriter, r *http.Request) {

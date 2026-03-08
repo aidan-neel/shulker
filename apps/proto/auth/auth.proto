@@ -4,6 +4,7 @@ package auth;
 
 import "google/api/annotations.proto";
 import "common/error.proto";
+import "user/user.proto";
 
 option go_package = "github.com/aidan-neel/shulker/apps/proto/gen/go/auth;auth";
 
@@ -21,11 +22,25 @@ service AuthService {
             body: "*"
         };
     }
+
+    rpc CurrentUser(CurrentUserRequest) returns (CurrentUserResult) {
+        option (google.api.http) = {
+            post: "/auth.AuthService/CurrentUser"
+            body: "*"
+        };
+    }
 }
 
 message RegisterResult {
   oneof result {
     RegisterResponse success = 1;
+    common.ErrorResponse error = 2;
+  }
+}
+
+message CurrentUserResult {
+  oneof result {
+    CurrentUserResponse success = 1;
     common.ErrorResponse error = 2;
   }
 }
@@ -43,6 +58,13 @@ message LoginRequest {
 }
 
 message LoginResponse {
+}
+
+message CurrentUserRequest {
+}
+
+message CurrentUserResponse {
+    user.User me = 1;
 }
 
 message RegisterRequest {
