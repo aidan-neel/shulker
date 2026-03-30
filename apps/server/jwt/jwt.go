@@ -1,4 +1,4 @@
-package utils
+package jwt
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-var JWT_SECRET = []byte(os.Getenv("JWT_SECRET"))
+var secret = []byte(os.Getenv("JWT_SECRET"))
 
 func GenerateToken(userID string, duration time.Duration, tokenType string) (string, error) {
 	claims := jwt.MapClaims{
@@ -18,7 +18,7 @@ func GenerateToken(userID string, duration time.Duration, tokenType string) (str
 		"exp": time.Now().Add(duration).Unix(),
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString(JWT_SECRET)
+	return token.SignedString(secret)
 }
 
 func ValidateToken(tokenString string, expectedType string) (string, error) {
@@ -26,7 +26,7 @@ func ValidateToken(tokenString string, expectedType string) (string, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
-		return JWT_SECRET, nil
+		return secret, nil
 	})
 	if err != nil {
 		return "", err

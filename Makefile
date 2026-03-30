@@ -1,4 +1,3 @@
-.PHONY: gen gen-upd dev db test first-time
 include apps/server/.env
 BIN_DIR := $(CURDIR)/.bin
 export PATH := $(BIN_DIR):$(PATH)
@@ -16,13 +15,10 @@ dev:
 	make dev-server & make dev-web
 
 dev-server:
-	cd apps/server && go run cmd/server/main.go
+	cd apps/server && go run main.go
 
 dev-web:
 	cd apps/web && bun run dev
-
-test:
-	cd apps/server && go run cmd/test/main.go
 
 db:
 	docker compose up postgres -d
