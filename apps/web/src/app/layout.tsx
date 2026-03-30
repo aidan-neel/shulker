@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Inter, Noto_Serif } from "next/font/google";
+import { Geist, Geist_Mono, Inter, Lora } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { Toaster } from "@/components/ui/sonner"
 
-const notoSerifHeading = Noto_Serif({ subsets: ['latin'], variable: '--font-heading' });
-
+const lora = Lora({ subsets: ['latin'], variable: '--font-heading' });
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
 const geistSans = Geist({
@@ -30,9 +30,12 @@ export default function RootLayout({
     return (
         <html
             lang="en"
-            className={cn("h-full", "antialiased", geistSans.variable, geistMono.variable, "font-sans", inter.variable, notoSerifHeading.variable)}
+            className={cn("h-full", "antialiased", geistSans.variable, geistMono.variable, "font-sans", inter.variable, lora.variable)}
         >
-            <body className="min-h-full flex flex-col">{children}</body>
+            <body className="min-h-full flex flex-col">
+                {children}
+                <Toaster />
+            </body>
         </html>
     );
 }
