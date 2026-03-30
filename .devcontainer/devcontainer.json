@@ -12,10 +12,7 @@
         "vscode": {
             "extensions": [
                 "golang.Go"
-            ],
-            "settings": {
-                "terminal.integrated.defaultProfile.linux": "zsh"
-            }
+            ]
         }
     }
 }

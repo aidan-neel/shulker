@@ -14,7 +14,7 @@ plugins:
     out: gen/openapi
 
   - remote: buf.build/bufbuild/es
-    out: ../../apps/web/src/lib/gen
+    out: ../web/lib/rpc/gen
     opt:
       - target=ts
       - js_import_style=module

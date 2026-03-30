@@ -1,5 +1,7 @@
-.PHONY: gen gen-upd dev db test
+.PHONY: gen gen-upd dev db test first-time
 include apps/server/.env
+BIN_DIR := $(CURDIR)/.bin
+export PATH := $(BIN_DIR):$(PATH)
 export
 
 gen:
@@ -23,7 +25,7 @@ test:
 	cd apps/server && go run cmd/test/main.go
 
 db:
-	docker compose up -d postgres
+	docker compose up postgres -d
 
 migrate:
 	cd apps/server && goose -dir postgres/migrations postgres "${DATABASE_URL}" up
